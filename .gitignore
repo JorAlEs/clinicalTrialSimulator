@@ -1,0 +1,42 @@
+# Archivos de RStudio
+.Rproj.user/
+*.Rproj
+.Rhistory
+.RData
+.Ruserdata
+
+# Datos (puedes mantener /data/ vacío con un README)
+data/*.csv
+data/*.xlsx
+data/*.rds
+data/*.sav
+data/*.sas7bdat
+data/*.feather
+
+# Archivos temporales
+*.tmp
+*.log
+*.out
+*.aux
+*.toc
+
+# Outputs generados
+outputs/
+figures/
+*.pdf
+*.docx
+*.pptx
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Tokens de autenticación
+.httr-oauth
+.Renviron
+
+# Quarto (si no usas Quarto en este proyecto)
+.quarto/
+.Rproj.user
+.Rdata
+.quarto

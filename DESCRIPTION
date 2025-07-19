@@ -1,0 +1,17 @@
+Package: clinicalTrialSimulator
+Title: Modular Clinical Trial Simulator
+Version: 0.1.0
+Authors@R: 
+  person(given = "Jorge", family = "Alcántara Espinosa", email = "jorge.alcantara.espinosa@hotmail.com", role = c("aut", "cre"))
+Description: Modular simulation engine for generating synthetic clinical trial datasets for phases I-III.
+Depends: R (>= 4.1.0)
+Imports:
+  tidyverse,
+  survival,
+  lubridate,
+  data.table
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
