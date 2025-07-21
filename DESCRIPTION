@@ -1,17 +1,19 @@
 Package: clinicalTrialSimulator
-Title: Modular Clinical Trial Simulator
+Type: Package
+Title: Clinical Trial Data Simulation Package
 Version: 0.1.0
-Authors@R: 
-  person(given = "Jorge", family = "Alcántara Espinosa", email = "jorge.alcantara.espinosa@hotmail.com", role = c("aut", "cre"))
-Description: Modular simulation engine for generating synthetic clinical trial datasets for phases I-III.
-Depends: R (>= 4.1.0)
-Imports:
-  tidyverse,
-  survival,
-  lubridate,
-  data.table
-License: MIT
+Authors@R: person("Jorge", "Alcántara", email = "Jorge.alcantara.espinosa@hotmail.com", role = c("aut", "cre"))
+Description: Provides functions to simulate clinical trial data including patient demographics,
+    treatment allocation, dropouts (including those related to adverse events), time-to-event outcomes,
+    longitudinal repeated measures, and exporting a subject-level analysis dataset (ADSL).
+    The package supports multi-level trial structures (e.g., countries and sites) and innovative features
+    like dropout due to simulated adverse events.
+License: GPL-3
 Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+
