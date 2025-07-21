@@ -1,3 +1,5 @@
+# clinicalTrialSimulator
+
 A modular R package for simulating realistic clinical trial datasets, including patient generation, treatment allocation, outcomes (continuous, binary, ordinal, longitudinal), survival, dropout, adverse events, and ADaM-compatible export.
 
 🚀 Features
