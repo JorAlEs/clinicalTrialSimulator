@@ -1,7 +1,6 @@
 Package: clinicalTrialSimulator
 Type: Package
 Title: Clinical Trial Data Simulation in CDISC-Compatible Format
-URL: https://jorales.github.io/clinicalTrialSimulator
 Version: 1.0.0
 Authors@R: 
     person("Jorge", "Alcántara", email = "jorge.alcantara.espinosa@hotmail.com", role = c("aut", "cre"))
@@ -27,3 +26,5 @@ Suggests:
     rmarkdown,
     pkgdown
 VignetteBuilder: knitr
+URL: https://jorales.github.io/clinical-trial-simulator-R/
+BugReports: https://github.com/JorAlEs/clinical-trial-simulator-R/issues
