@@ -1,25 +1,26 @@
 template:
   bootstrap: 5
-  bootswatch: flatly
-  params:
-    highlight: github
-
-home:
-  title: Clinical Trial Simulator
-  description: |
-    Simulate patient-level clinical trial datasets with ADaM-ready output and realistic trial behavior.
 
 navbar:
-  structure:
-    left:
-      - home
-      - reference
-      - articles
-    right:
-      - github
-articles:
-  - title: "Getting Started"
-    contents:
-      - intro-clinical-trial-simulator
+  title: "Clinical Trial Simulator"
+  type: default
+  left:
+    - text: "Reference"
+      href: reference/index.html
+    - text: "Articles"
+      href: articles/index.html
+    - text: "GitHub"
+      href: https://github.com/JorAlEs/clinical-trial-simulator-R
 
-url: https://jorales.github.io/clinicalTrialSimulator
+reference:
+  - title: "Core functions"
+    contents:
+      - generate_patients
+      - simulate_data
+      - generate_visits
+      - simulate_event_times
+
+articles:
+  - title: "Get Started"
+    contents:
+      - getting-started
