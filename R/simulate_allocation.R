@@ -1,55 +1,35 @@
-#' Simulate Treatment Allocation
+#' Randomly allocate patients to treatment arms
 #'
-#' Assigns patients to treatment arms using fixed ratios. Supports stratified randomization and returns
-#' CDISC-compatible columns (`ARM`, `ARMCD`, `ACTARM`, `ACTARMCD`).
+#' This function assigns each patient to a treatment arm (e.g., control or treatment) according to specified allocation ratios.
 #'
-#' @param df Data frame with patient information.
-#' @param arms Character vector of arm labels (e.g., c("Placebo", "Treatment")).
-#' @param ratio Numeric vector of allocation ratios (e.g., c(1,2)).
-#' @param stratify_by Optional column name for stratified randomization (e.g., "STRATUM").
-#' @param block_size Optional integer for block randomization (must be multiple of sum(ratio)).
-#' @param seed Optional integer for reproducibility.
+#' @param data A data frame of patients (e.g., output of \code{\link{simulate_patients}}).
+#' @param arm_names Character vector of arm names. Default is c("Control","Treatment") for a two-arm trial.
+#' @param ratio Numeric vector of allocation ratios for each arm (same length as \code{arm_names}). Default is c(1,1) for equal allocation.
 #'
-#' @return Data frame with added columns: `ARM`, `ARMCD`, `ACTARM`, `ACTARMCD`.
+#' @return The input data frame with an added factor column \code{Arm} indicating the treatment group for each patient.
+#' @details Allocation is done by simple random sampling. The \code{ratio} vector is normalized to probabilities. If an arm receives no patients by chance (especially when sample size is small), the \code{Arm} factor will still include that level (to preserve all arm levels).
+#'
+#' @examples
+#' df <- simulate_patients(10)
+#' # Allocate patients equally to "Placebo" vs "Drug" arms
+#' df <- simulate_allocation(df, arm_names = c("Placebo","Drug"), ratio = c(1,1))
+#' table(df$Arm)
 #'
 #' @export
-simulate_allocation <- function(df,
-                                arms = c("A", "B"),
-                                ratio = c(1, 1),
-                                stratify_by = NULL,
-                                block_size = NULL,
-                                seed = NULL) {
-  if (!is.null(seed)) set.seed(seed)
-
-  if (length(arms) != length(ratio)) stop("Length of arms and ratio must match.")
-  if (!is.null(block_size) && (block_size %% sum(ratio)) != 0) stop("Block size must be multiple of sum(ratio).")
-
-  generate_blocked <- function(n, arms, ratio, block_size = NULL) {
-    prob <- ratio / sum(ratio)
-    if (is.null(block_size)) {
-      sample(arms, n, replace = TRUE, prob = prob)
-    } else {
-      repeats <- ceiling(n / block_size)
-      block_pattern <- rep(arms, times = ratio)
-      alloc <- unlist(replicate(repeats, sample(block_pattern), simplify = FALSE))
-      alloc[1:n]
-    }
+simulate_allocation <- function(data, arm_names = c("Control", "Treatment"), ratio = c(1, 1)) {
+  if (length(arm_names) != length(ratio)) {
+    stop("Length of arm_names must equal length of ratio vector.")
   }
+  if (any(ratio < 0)) stop("Allocation ratios must be non-negative.")
+  total_ratio <- sum(ratio)
+  if (total_ratio <= 0) stop("Sum of ratios must be positive.")
 
-  if (!is.null(stratify_by) && stratify_by %in% names(df)) {
-    df <- df[order(df[[stratify_by]]), ]
-    df$ARM <- unlist(
-      tapply(seq_len(nrow(df)), df[[stratify_by]], function(idxs) {
-        generate_blocked(length(idxs), arms, ratio, block_size)
-      })
-    )
-  } else {
-    df$ARM <- generate_blocked(nrow(df), arms, ratio, block_size)
-  }
+  # Normalize ratios to probabilities
+  probs <- ratio / total_ratio
 
-  df$ARMCD <- as.character(match(df$ARM, arms))  # e.g., "1", "2"
-  df$ACTARM <- df$ARM
-  df$ACTARMCD <- df$ARMCD
+  # Randomly assign arms according to probabilities
+  assignments <- sample(arm_names, size = nrow(data), replace = TRUE, prob = probs)
+  data$Arm <- factor(assignments, levels = arm_names)
 
-  return(df)
+  return(data)
 }
