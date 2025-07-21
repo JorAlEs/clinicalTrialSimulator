@@ -1,6 +1,7 @@
 Package: clinicalTrialSimulator
 Type: Package
 Title: Clinical Trial Data Simulation in CDISC-Compatible Format
+URL: https://jorales.github.io/clinicalTrialSimulator
 Version: 1.0.0
 Authors@R: 
     person("Jorge", "Alcántara", email = "jorge.alcantara.espinosa@hotmail.com", role = c("aut", "cre"))
