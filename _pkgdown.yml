@@ -20,6 +20,6 @@ navbar:
 articles:
   - title: "Getting Started"
     contents:
-      - your-vignette-name
+      - intro-clinical-trial-simulator
 
 url: https://jorales.github.io/clinicalTrialSimulator
