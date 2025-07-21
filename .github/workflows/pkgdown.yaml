@@ -19,20 +19,25 @@ jobs:
         uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
 
       - name: Install R packages
+        shell: Rscript {0}
         run: |
+          install.packages("remotes", repos = "https://cloud.r-project.org")
+          remotes::install_deps(dependencies = TRUE, upgrade = "never")
           install.packages("pkgdown", repos = "https://cloud.r-project.org")
           install.packages(".", repos = NULL, type = "source")
-        shell: Rscript {0}
 
       - name: Build site with pkgdown
-        run: pkgdown::build_site()
         shell: Rscript {0}
+        run: pkgdown::build_site()
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
