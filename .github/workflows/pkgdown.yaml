@@ -23,12 +23,12 @@ jobs:
       - name: Install R packages
         run: |
           install.packages("remotes")
-          remotes::install_cran(c("pkgdown", "devtools"))
+          remotes::install_cran(c("pkgdown"))
         shell: Rscript {0}
-
+        
       - name: Build pkgdown site
         run: |
-          devtools::install()
+          install.packages("pkgdown")
           pkgdown::build_site()
         shell: Rscript {0}
 
