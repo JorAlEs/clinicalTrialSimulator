@@ -23,7 +23,11 @@ jobs:
 
       - name: Install R packages
         run: |
-          install.packages("pkgdown", dependencies = TRUE)
+        install.packages(c("remotes", "pkgdown", "devtools"), repos = "https://cloud.r-project.org")
+        shell: Rscript {0}
+      - name: Check pkgdown installed
+        run: |
+        stopifnot("pkgdown" %in% rownames(installed.packages()))
         shell: Rscript {0}
 
       - name: Build site with pkgdown
