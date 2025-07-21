@@ -1,7 +1,7 @@
 Package: clinicalTrialSimulator
 Type: Package
 Title: Clinical Trial Data Simulation Package
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: person("Jorge", "Alcántara", email = "Jorge.alcantara.espinosa@hotmail.com", role = c("aut", "cre"))
 Description: Provides functions to simulate clinical trial data including patient demographics,
     treatment allocation, dropouts (including those related to adverse events), time-to-event outcomes,
