@@ -23,13 +23,12 @@ jobs:
 
       - name: Install R packages
         run: |
-          install.packages(c("remotes", "pkgdown", "devtools"), repos = "https://cloud.r-project.org")
+          install.packages("pkgdown", repos = "https://cloud.r-project.org")
+          install.packages(".", repos = NULL, type = "source")
         shell: Rscript {0}
 
       - name: Build site with pkgdown
-        run: |
-          devtools::install()
-          pkgdown::build_site()
+        run: pkgdown::build_site()
         shell: Rscript {0}
 
       - name: Deploy to GitHub Pages
