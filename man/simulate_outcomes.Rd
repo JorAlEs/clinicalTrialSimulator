@@ -2,50 +2,65 @@
 % Please edit documentation in R/simulate_outcomes.R
 \name{simulate_outcomes}
 \alias{simulate_outcomes}
-\title{Simulate Clinical Trial Outcomes}
+\title{Simulate a single outcome per patient (continuous or binary)}
 \usage{
 simulate_outcomes(
-  df,
-  arm_col = "ARM",
-  outcome_type = c("continuous", "binary", "ordinal"),
-  effect_size = 0.5,
-  baseline_mean = 100,
-  baseline_sd = 15,
-  prob_baseline = 0.5,
-  n_levels = 3,
-  covariates = NULL,
-  seed = NULL,
-  param = "Simulated Endpoint"
+  data,
+  outcome_type = c("continuous", "binary"),
+  outcome_mean_control = 0,
+  outcome_diff = 0,
+  outcome_sd = 1,
+  outcome_prob_control = 0.5,
+  outcome_prob_treatment = 0.5,
+  outcome_means = NULL,
+  outcome_probs = NULL,
+  cluster_var = NULL,
+  cluster_effect_sd = 0
 )
 }
 \arguments{
-\item{df}{Data frame including treatment assignment (\code{ARM} or \code{ARMCD}).}
+\item{data}{A data frame of patients that should include a treatment group column \code{Arm} (optional if only one group).}
 
-\item{arm_col}{Character; name of the treatment column (default = "ARM").}
+\item{outcome_type}{Character, either "continuous" or "binary" (default = "continuous").}
 
-\item{outcome_type}{Type of outcome: "continuous", "binary", or "ordinal".}
+\item{outcome_mean_control}{Numeric, mean of the continuous outcome for the control group (used if \code{outcome_type = "continuous"}, default = 0).}
 
-\item{effect_size}{Numeric; effect size (difference in means or odds ratio).}
+\item{outcome_diff}{Numeric, treatment effect on the outcome. For continuous outcomes, this is added to the control mean for treatment group(s). For binary outcomes, this is ignored (use probabilities instead). Default = 0 (no treatment effect).}
 
-\item{baseline_mean}{Mean outcome in control group (for continuous).}
+\item{outcome_sd}{Numeric, standard deviation for the continuous outcome (default = 1). Ignored for binary outcomes.}
 
-\item{baseline_sd}{Standard deviation in control group (for continuous).}
+\item{outcome_prob_control}{Numeric, probability of outcome = "Yes" for control group (used if \code{outcome_type = "binary"}, default = 0.5).}
 
-\item{prob_baseline}{Probability of success in control group (for binary).}
+\item{outcome_prob_treatment}{Numeric, probability of outcome = "Yes" for treatment group (used if \code{outcome_type = "binary"} and exactly two arms, default = 0.5).}
 
-\item{n_levels}{Integer; number of levels for ordinal outcome.}
+\item{outcome_means}{Named numeric vector of outcome means by arm (optional alternative to using \code{outcome_mean_control} and \code{outcome_diff}).}
 
-\item{covariates}{Optional character vector of covariate names to include as predictors.}
+\item{outcome_probs}{Named numeric vector of outcome "Yes" probabilities by arm (optional alternative to using \code{outcome_prob_control} and \code{outcome_prob_treatment}).}
 
-\item{seed}{Optional integer for reproducibility.}
+\item{cluster_var}{Character, name of cluster variable in \code{data} for random effect (only used for continuous outcomes; e.g., "Site" for site-level effect).}
 
-\item{param}{Character; label of the outcome (e.g. "Change in BP").}
+\item{cluster_effect_sd}{Numeric, standard deviation of random effect for clusters (only for continuous outcomes, default = 0).}
 }
 \value{
-Data frame with added columns: \code{AVAL}, \code{AVALC}, \code{PARAM}, \code{PARAMCD}.
+The input data frame with a new column \code{Outcome}. For continuous outcomes, this is numeric. For binary outcomes, this is a factor with levels "No" and "Yes". Patients who dropped out or had an event before the outcome measurement are assigned \code{NA} for the outcome.
 }
 \description{
-Simulates patient-level outcomes (continuous, binary, or ordinal) based on treatment assignment
-and specified treatment effect. Optionally includes covariate-based variation and generates
-ADaM-like variables (\code{AVAL}, \code{AVALC}, \code{PARAM}, \code{PARAMCD}).
+This function simulates an endpoint (e.g., a final outcome or response) for each patient, which could be continuous (e.g., a lab measurement) or binary (e.g., responder yes/no). It supports a treatment effect and optional cluster-level variability for continuous outcomes.
+}
+\details{
+For continuous outcomes, if multiple arms are present and \code{outcome_means} is provided, those values are used for each arm's mean. Otherwise, \code{outcome_mean_control} is used for the first arm (assumed control) and \code{outcome_diff} is added for other arms. A random normal error with SD \code{outcome_sd} is added for each patient. If \code{cluster_var} is given (and \code{cluster_effect_sd > 0}), a random intercept per cluster is added to the outcome to simulate cluster-level variability.
+
+For binary outcomes, if two arms are present, \code{outcome_prob_control} and \code{outcome_prob_treatment} define the success probabilities for control and treatment respectively (or use \code{outcome_probs} for multiple arms). The outcome is generated as "Yes"/"No" for each patient. If a patient dropped out or had a terminal event prior to the endpoint, their outcome is set to \code{NA} (assuming missing data due to dropout/death).
+}
+\examples{
+df <- simulate_patients(5)
+df <- simulate_allocation(df)
+# Continuous outcome: mean 50 in control, treatment +5 difference
+df <- simulate_outcomes(df, outcome_type = "continuous",
+                        outcome_mean_control = 50, outcome_diff = 5, outcome_sd = 10)
+# Binary outcome: 30\% responders in control vs 60\% in treatment
+df <- simulate_outcomes(df, outcome_type = "binary",
+                        outcome_prob_control = 0.3, outcome_prob_treatment = 0.6)
+head(df$Outcome)
+
 }

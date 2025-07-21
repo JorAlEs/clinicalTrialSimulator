@@ -10,10 +10,9 @@ Description: Provides functions to simulate clinical trial data including patien
     like dropout due to simulated adverse events.
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-

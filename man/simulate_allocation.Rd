@@ -2,34 +2,34 @@
 % Please edit documentation in R/simulate_allocation.R
 \name{simulate_allocation}
 \alias{simulate_allocation}
-\title{Simulate Treatment Allocation}
+\title{Randomly allocate patients to treatment arms}
 \usage{
 simulate_allocation(
-  df,
-  arms = c("A", "B"),
-  ratio = c(1, 1),
-  stratify_by = NULL,
-  block_size = NULL,
-  seed = NULL
+  data,
+  arm_names = c("Control", "Treatment"),
+  ratio = c(1, 1)
 )
 }
 \arguments{
-\item{df}{Data frame with patient information.}
+\item{data}{A data frame of patients (e.g., output of \code{\link{simulate_patients}}).}
 
-\item{arms}{Character vector of arm labels (e.g., c("Placebo", "Treatment")).}
+\item{arm_names}{Character vector of arm names. Default is c("Control","Treatment") for a two-arm trial.}
 
-\item{ratio}{Numeric vector of allocation ratios (e.g., c(1,2)).}
-
-\item{stratify_by}{Optional column name for stratified randomization (e.g., "STRATUM").}
-
-\item{block_size}{Optional integer for block randomization (must be multiple of sum(ratio)).}
-
-\item{seed}{Optional integer for reproducibility.}
+\item{ratio}{Numeric vector of allocation ratios for each arm (same length as \code{arm_names}). Default is c(1,1) for equal allocation.}
 }
 \value{
-Data frame with added columns: \code{ARM}, \code{ARMCD}, \code{ACTARM}, \code{ACTARMCD}.
+The input data frame with an added factor column \code{Arm} indicating the treatment group for each patient.
 }
 \description{
-Assigns patients to treatment arms using fixed ratios. Supports stratified randomization and returns
-CDISC-compatible columns (\code{ARM}, \code{ARMCD}, \code{ACTARM}, \code{ACTARMCD}).
+This function assigns each patient to a treatment arm (e.g., control or treatment) according to specified allocation ratios.
+}
+\details{
+Allocation is done by simple random sampling. The \code{ratio} vector is normalized to probabilities. If an arm receives no patients by chance (especially when sample size is small), the \code{Arm} factor will still include that level (to preserve all arm levels).
+}
+\examples{
+df <- simulate_patients(10)
+# Allocate patients equally to "Placebo" vs "Drug" arms
+df <- simulate_allocation(df, arm_names = c("Placebo","Drug"), ratio = c(1,1))
+table(df$Arm)
+
 }

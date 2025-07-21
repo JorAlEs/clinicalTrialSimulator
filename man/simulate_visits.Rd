@@ -2,31 +2,36 @@
 % Please edit documentation in R/simulate_visits.R
 \name{simulate_visits}
 \alias{simulate_visits}
-\title{Simulate Visit Dates for Clinical Trial Patients}
+\title{Generate scheduled visits for each patient}
 \usage{
-simulate_visits(
-  df,
-  visit_schedule = c(0, 7, 14, 30, 60, 90),
-  jitter_days = 2,
-  dropout_rate = 0.2,
-  seed = NULL
-)
+simulate_visits(data, visit_times)
 }
 \arguments{
-\item{df}{Data frame of patients including \code{TRTSDT} column as treatment start date.}
+\item{data}{A data frame of patients. If the data contains \code{DropoutTime}/\code{Dropped} and/or \code{EventTime}/\code{EventStatus} columns, these will be used to censor visits.}
 
-\item{visit_schedule}{Numeric vector of planned visit days from treatment start (e.g., c(0, 14, 28)).}
-
-\item{jitter_days}{Integer; maximum number of days to randomly shift each visit date (+/-).}
-
-\item{dropout_rate}{Numeric \link{0,1}; proportion of patients who drop out randomly before a given visit.}
-
-\item{seed}{Optional integer to ensure reproducibility.}
+\item{visit_times}{Numeric vector of planned visit times (in the same time units as other simulation outputs). For example, \code{c(0, 3, 6, 9, 12)} for monthly visits over a year (if time in months). Include 0 for baseline.}
 }
 \value{
-Data frame with new columns \code{VISIT1DT}, \code{VISIT2DT}, etc., one for each visit.
+A data frame with one row per patient per scheduled visit (up to any censoring point). Columns:
+\itemize{
+  \item \code{ID}: Patient ID (matching \code{data$ID}).
+  \item \code{Time}: Scheduled visit time.
+}
 }
 \description{
-Generates scheduled visit dates for each patient based on treatment start date,
-with optional dropout and visit date jittering.
+This function creates a dataset of planned visit times for each patient, taking into account censoring due to dropouts or events. After a patient drops out or has an event (e.g., death), no further visits are generated.
+}
+\details{
+This function essentially expands the patient data by visit time, but omits any visits that occur after a patient has dropped out or experienced a terminal event. If neither dropout nor event information is present, all specified \code{visit_times} will be returned for each patient.
+}
+\examples{
+df <- simulate_patients(3)
+# Simulate one patient dropping out and one having an event, for example
+df$Dropped <- c(FALSE, TRUE, FALSE)
+df$DropoutTime <- c(NA, 5, NA)
+df$EventStatus <- c(0, 0, 1)
+df$EventTime <- c(NA, NA, 5)
+visits <- simulate_visits(df, visit_times = c(0, 5, 10))
+visits  # Patients 2 and 3 have visits censored after time 0
+
 }

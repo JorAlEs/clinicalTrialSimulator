@@ -2,37 +2,37 @@
 % Please edit documentation in R/simulate_survival.R
 \name{simulate_survival}
 \alias{simulate_survival}
-\title{Simulate Time-to-Event (Survival) Data}
+\title{Simulate time-to-event (survival) outcomes}
 \usage{
-simulate_survival(
-  df,
-  arm_col = "ARM",
-  hr = 0.7,
-  baseline_median = 365,
-  max_followup = 365,
-  shape = 1,
-  seed = NULL
-)
+simulate_survival(data, median_time_control, hr = 1, study_duration = NULL)
 }
 \arguments{
-\item{df}{Data frame with patient-level data. Must include a treatment column (\code{ARM} or \code{ARMCD}).}
+\item{data}{A data frame of patients that includes a treatment group column (typically \code{Arm} from \code{\link{simulate_allocation}}). If no \code{Arm} column is present or only one level, all patients are treated as a single group.}
 
-\item{arm_col}{Name of the treatment variable in \code{df}. Default is "ARM".}
+\item{median_time_control}{Numeric, median event time for the control group (e.g., median survival in control arm).}
 
-\item{hr}{Hazard ratio for treatment vs control (HR < 1 = beneficial effect).}
+\item{hr}{Numeric or named numeric vector specifying hazard ratios for treatment arms relative to control. If a single numeric is given (default = 1), and exactly two arms exist, it is interpreted as the hazard ratio for the treatment arm vs control. If multiple arms or a named vector is provided, each arm's hazard is adjusted accordingly (the control arm should have hazard ratio 1).}
 
-\item{baseline_median}{Median survival time (in days) for the control group.}
-
-\item{max_followup}{Administrative censoring time (e.g., 365 days).}
-
-\item{shape}{Weibull shape parameter (default = 1 for exponential).}
-
-\item{seed}{Optional integer seed for reproducibility.}
+\item{study_duration}{Numeric, maximum follow-up time (e.g., study end in time units). If provided, events beyond this time are censored at \code{study_duration}. (Default = NULL, meaning no administrative censoring apart from any later dropout handling.)}
 }
 \value{
-A data frame with added columns: \code{TIME}, \code{EVENT}, \code{CNSR}, \code{AVAL}, \code{AVALC}, \code{PARAM}.
+The input data frame with two new columns:
+\itemize{
+  \item \code{EventTime}: Simulated event time or censoring time.
+  \item \code{EventStatus}: Event occurrence indicator (1 = event occurred, 0 = censored by end of follow-up).
+}
 }
 \description{
-Simulates survival times for a clinical trial population, with optional treatment effect
-and administrative censoring. Returns survival time, censoring indicator, and other relevant fields.
+This function simulates a survival time (e.g., time to event or censoring) for each patient, with an option to specify treatment effect on hazard. It assumes an exponential survival distribution for simplicity.
+}
+\details{
+Exponential survival times are generated. The control arm event rate is derived from \code{median_time_control} (rate = log(2)/median). Hazard ratios < 1 indicate longer survival in treatment arms (reduced hazard). For multiple arms, provide hazard ratios as a named vector (names matching \code{Arm} levels; the control arm can be omitted or set to 1). If no \code{Arm} column is present in \code{data}, all patients are assumed to share the same baseline hazard.
+}
+\examples{
+df <- simulate_patients(100)
+df <- simulate_allocation(df)
+# Simulate survival with median 12 months in control, and hazard ratio 0.75 for treatment
+df <- simulate_survival(df, median_time_control = 12, hr = 0.75, study_duration = 24)
+head(df[c("Arm","EventTime","EventStatus")])
+
 }

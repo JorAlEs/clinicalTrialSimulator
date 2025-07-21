@@ -2,36 +2,51 @@
 % Please edit documentation in R/simulate_patients.R
 \name{simulate_patients}
 \alias{simulate_patients}
-\title{Simulate patient data}
+\title{Simulate baseline patient demographics and site assignments}
 \usage{
 simulate_patients(
   n,
-  strata = NULL,
-  study_id = "SIM001",
-  sites = 5,
-  countries = c("ES", "DE", "FR", "US", "IN"),
-  age_mean = 60,
-  age_sd = 10,
-  bmi_mean = 27,
-  bmi_sd = 4,
-  smoking_rate = 0.25,
-  comorbidities = TRUE,
-  visit_schedule = c(0, 30, 60, 90),
-  seed = NULL
+  countries = 1,
+  sites_per_country = 1,
+  mean_age = 50,
+  sd_age = 10,
+  prop_female = 0.5
 )
 }
 \arguments{
-\item{n}{Number of patients to simulate.}
+\item{n}{Integer, number of patients to simulate.}
 
-\item{strata}{Optional vector of stratum labels (e.g., c("EU", "US")).}
+\item{countries}{Integer, number of countries in the trial (default = 1).}
+
+\item{sites_per_country}{Integer, number of sites per country (default = 1). Total sites = countries * sites_per_country.}
+
+\item{mean_age}{Numeric, mean age of patients (default = 50).}
+
+\item{sd_age}{Numeric, standard deviation of age (default = 10).}
+
+\item{prop_female}{Numeric, proportion of patients who are female (default = 0.5).}
 }
 \value{
-A data frame with patient IDs, age, sex, and optionally a stratum column.
+A data frame with \code{n} rows, each representing a patient. Columns include:
+\itemize{
+  \item \code{ID}: Patient identifier (integer).
+  \item \code{Country}: Factor indicating country (e.g., "Country1", "Country2", ...).
+  \item \code{Site}: Factor indicating site (e.g., "Site1", "Site2", ...).
+  \item \code{Age}: Patient age (years).
+  \item \code{Sex}: Patient sex (factor with levels "Female","Male").
+}
 }
 \description{
-This function creates a synthetic dataset of patients for use in a clinical trial simulation.
+This function simulates a baseline dataset of trial patients with demographic information
+and site/country assignments. Each patient is assigned to a site (nested within country)
+and given baseline characteristics such as age and sex.
+}
+\details{
+The site assignments are distributed roughly equally among the sites. Age is drawn from a normal distribution and then bounded between 18 and 90. Sex is assigned according to the specified proportion of females. This function is typically the first step in the simulation workflow.
 }
 \examples{
-simulate_patients(100, strata = c("EU", "US"))
+# Simulate 5 patients in 2 countries with 2 sites each
+df <- simulate_patients(n = 5, countries = 2, sites_per_country = 2)
+head(df)
 
 }
