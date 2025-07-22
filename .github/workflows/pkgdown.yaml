@@ -20,16 +20,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
 
-      - name: Install devtools
-        run: install.packages("devtools", repos = "https://cloud.r-project.org")
-        shell: Rscript {0}
-
-      - name: Install pkgdown and vignette deps
-        run: install.packages(c("pkgdown", "rmarkdown", "knitr"), repos = "https://cloud.r-project.org")
+      - name: Install required packages
+        run: install.packages(c("remotes", "pkgdown", "rmarkdown", "knitr"), repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
       - name: Install your package
-        run: devtools::install(build_vignettes = TRUE)
+        run: remotes::install_local(".", build = TRUE, build_vignettes = TRUE)
         shell: Rscript {0}
 
       - name: Build pkgdown site
