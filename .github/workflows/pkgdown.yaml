@@ -18,6 +18,17 @@ jobs:
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
+      - name: Cache R packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/R
+            ~/.local/share/R
+            ~/.R
+          key: ${{ runner.os }}-r-${{ hashFiles('**/DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-r-
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
@@ -34,12 +45,13 @@ jobs:
 
       - name: Install R packages
         run: |
-          install.packages("devtools", repos = "https://cloud.r-project.org")
-          install.packages("pkgdown", dependencies = TRUE, repos = "https://cloud.r-project.org")
+          options(repos = c(CRAN = "https://cloud.r-project.org"))
+          install.packages("devtools")
+          install.packages("pkgdown", dependencies = TRUE)
           devtools::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
-      - name: Install package
+      - name: Install local package
         run: devtools::install()
         shell: Rscript {0}
 
@@ -48,6 +60,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Commit and push pkgdown site
+        if: github.actor != 'github-actions[bot]'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
