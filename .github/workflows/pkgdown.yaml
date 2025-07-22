@@ -18,10 +18,12 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+          sudo apt-get install -y \
+            libcurl4-openssl-dev libssl-dev libxml2-dev \
+            libfreetype6-dev libharfbuzz-dev libfribidi-dev libpng-dev
 
       - name: Install required packages
-        run: install.packages(c("remotes", "pkgdown", "rmarkdown", "knitr"), repos = "https://cloud.r-project.org")
+        run: install.packages(c("remotes", "pkgdown", "rmarkdown", "knitr", "tidyverse"), repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
       - name: Install your package
