@@ -7,16 +7,27 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    # Agregamos permisos explícitos para evitar problemas
+    permissions:
+      contents: write
 
     env:
       R_LIBS_USER: ~/.local/R/library
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # Optimizaciones para R
+      _R_CHECK_LENGTH_1_LOGIC2_: true
+      _R_CHECK_MATRIX_DATA_: false
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1 # Checkout superficial para mayor velocidad
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true # Usa binarios pre-compilados
 
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -24,32 +35,46 @@ jobs:
       - name: Cache R packages
         uses: actions/cache@v4
         with:
-          path: ${{ env.R_LIBS_USER }}
-          key: r-${{ runner.os }}-${{ hashFiles('**/DESCRIPTION') }}
-          restore-keys: r-${{ runner.os }}-
+          path: |
+            ${{ env.R_LIBS_USER }}
+            !${{ env.R_LIBS_USER }}/*/doc
+          key: ${{ runner.os }}-rlang-${{ hashFiles('DESCRIPTION') }}-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: |
+            ${{ runner.os }}-rlang-
 
+      # Optimizamos la instalación de dependencias del sistema
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev libssl-dev libxml2-dev \
-            libfontconfig1-dev libfreetype6-dev libpng-dev \
-            libharfbuzz-dev libfribidi-dev libtiff5-dev
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libpng-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libtiff5-dev
 
+      # Instalación más eficiente de paquetes R
       - name: Install R packages
         run: |
-          install.packages(c("devtools", "pkgdown", "tidyverse"), repos = "https://cloud.r-project.org")
-          devtools::install(".", dependencies = TRUE, upgrade = "never")
+          pkg_list <- c("pkgdown")
+          if (!all(pkg_list %in% rownames(installed.packages()))) {
+            install.packages(pkg_list, repos = "https://cloud.r-project.org", Ncpus = parallel::detectCores())
+          }
+          pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
 
-      - name: Build site with pkgdown
-        run: pkgdown::build_site()
-        shell: Rscript {0}
-
-      # Paso NUEVO: Desplegar el sitio en GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      # Deploy más rápido usando actions/deploy-pages
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-          # Si tu sitio se genera en otro directorio, cámbialo aquí
+          path: 'docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

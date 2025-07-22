@@ -1,26 +1,46 @@
+url: https://jorales.github.io/clinical-trial-simulator-R/
 template:
   bootstrap: 5
+  params:
+    bootswatch: cosmo
 
 navbar:
-  title: "Clinical Trial Simulator"
-  type: default
-  left:
-    - text: "Reference"
-      href: reference/index.html
-    - text: "Articles"
-      href: articles/index.html
-    - text: "GitHub"
-      href: https://github.com/JorAlEs/clinical-trial-simulator-R
+  structure:
+    left:  [intro, reference, articles]
+    right: [github]
 
 reference:
-  - title: "Core functions"
-    contents:
-      - generate_patients
-      - simulate_data
-      - generate_visits
-      - simulate_event_times
+- title: "Simulación de Pacientes y Asignación"
+  desc: "Funciones para simular pacientes y su asignación a grupos de tratamiento"
+  contents:
+  - '`simulate_patients`'
+  - '`simulate_allocation`'
+
+- title: "Simulación de Resultados"
+  desc: "Funciones para simular diferentes tipos de resultados clínicos"
+  contents:
+  - '`simulate_outcomes`'
+  - '`simulate_longitudinal_outcomes`'
+  - '`simulate_survival`'
+
+- title: "Simulación de Eventos del Estudio"
+  desc: "Funciones para simular eventos durante el estudio"
+  contents:
+  - '`simulate_visits`'
+  - '`simulate_dropout`'
+
+- title: "Exportación de Datos"
+  desc: "Funciones para exportar datos en formatos específicos"
+  contents:
+  - '`export_adam_format`'
 
 articles:
-  - title: "Get Started"
-    contents:
-      - getting-started
+- title: "Intro"
+  contents:
+    - intro-clinical-trial-simulator
+
+
+
+development:
+  mode: auto
+

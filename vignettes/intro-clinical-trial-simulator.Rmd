@@ -1,8 +1,8 @@
 ---
-title: "Clinical Trial Simulation Workflow"
+title: "Intro to Clinical Trial Simulator"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Clinical Trial Simulation Workflow}
+  %\VignetteIndexEntry{intro-clinical-trial-simulator}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

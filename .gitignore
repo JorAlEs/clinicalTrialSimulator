@@ -42,3 +42,5 @@ Thumbs.db
 .quarto
 inst/doc
 docs
+/doc/
+/Meta/
