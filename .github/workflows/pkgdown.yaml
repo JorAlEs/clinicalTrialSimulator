@@ -19,14 +19,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+          
+      - name: Check devtools is installed
+        run: if (!requireNamespace("devtools", quietly = TRUE)) stop("devtools not available")
+        shell: Rscript {0}
 
       - name: Install required packages
         run: |
-          install.packages(c("pkgdown", "devtools"), repos = "https://cloud.r-project.org")
+          install.packages(c("devtools", "pkgdown", "rmarkdown", "knitr"), repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
-      - name: Install package
-        run: devtools::install()
+      - name: Build vignettes and install package
+        run: devtools::install(build_vignettes = TRUE)
         shell: Rscript {0}
 
       - name: Build pkgdown site
