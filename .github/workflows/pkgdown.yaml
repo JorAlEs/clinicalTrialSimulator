@@ -56,8 +56,11 @@ jobs:
         shell: Rscript {0}
 
       - name: Build pkgdown site
-        run: pkgdown::build_site()
+        run: |
+          pkgdown::build_site()
+          file.create("docs/.nojekyll")
         shell: Rscript {0}
+
 
       - name: Commit and push pkgdown site
         if: github.actor != 'github-actions[bot]'
