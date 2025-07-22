@@ -8,6 +8,9 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      R_LIBS_USER: ~/.local/R/library
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -15,27 +18,30 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
+      - name: Set up Pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Cache R packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: r-${{ runner.os }}-${{ hashFiles('**/DESCRIPTION') }}
+          restore-keys: r-${{ runner.os }}-
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             libcurl4-openssl-dev libssl-dev libxml2-dev \
-            libfreetype6-dev libharfbuzz-dev libfribidi-dev libpng-dev
+            libfontconfig1-dev libfreetype6-dev libpng-dev \
+            libharfbuzz-dev libfribidi-dev libtiff5-dev
 
-      - name: Install required packages
-        run: install.packages(c("remotes", "pkgdown", "rmarkdown", "knitr", "tidyverse"), repos = "https://cloud.r-project.org")
+      - name: Install R packages
+        run: |
+          install.packages(c("devtools", "pkgdown", "tidyverse"), repos = "https://cloud.r-project.org")
+          devtools::install(".", dependencies = TRUE, upgrade = "never")
         shell: Rscript {0}
 
-      - name: Install your package
-        run: remotes::install_local(".", build = TRUE, build_vignettes = TRUE)
-        shell: Rscript {0}
-
-      - name: Build pkgdown site
+      - name: Build site with pkgdown
         run: pkgdown::build_site()
         shell: Rscript {0}
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: docs
