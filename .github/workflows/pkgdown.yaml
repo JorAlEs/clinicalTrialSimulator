@@ -45,3 +45,11 @@ jobs:
       - name: Build site with pkgdown
         run: pkgdown::build_site()
         shell: Rscript {0}
+
+      # Paso NUEVO: Desplegar el sitio en GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          # Si tu sitio se genera en otro directorio, cámbialo aquí
