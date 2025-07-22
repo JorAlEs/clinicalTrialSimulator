@@ -37,10 +37,12 @@ Thumbs.db
 
 # Quarto (si no usas Quarto en este proyecto)
 .quarto/
-.Rproj.user
-.Rdata
 .quarto
 inst/doc
-docs
-/doc/
-/Meta/
+
+# NO ignorar docs para GitHub Pages
+# docs/ se usa como sitio estático para pkgdown
+# Si quieres evitar que se incluya en el build del paquete, usa .Rbuildignore, no aquí
+# docs/
+# /doc/
+# /Meta/
