@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   intro-clinical-trial-simulator: intro-clinical-trial-simulator.html
-last_built: 2025-07-22T22:02Z
+last_built: 2025-07-23T17:16Z
 urls:
   reference: https://jorales.github.io/clinical-trial-simulator-R/reference
   article: https://jorales.github.io/clinical-trial-simulator-R/articles
