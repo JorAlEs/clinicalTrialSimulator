@@ -110,9 +110,6 @@ Feel free to use, modify, and distribute with attribution.
 🙋 Contributing & Feedback
 I welcome suggestions, feature requests, and collaborators!
 
-Open an issue or submit a pull request.
-
 🔗 Citation (example)
 Alcántara J. (2025). clinicalTrialSimulator: Modular Clinical Trial Data Simulation in R. Version 1.0. https://github.com/JorAlEs/clinicalTrialSimulator
 
-Let me know if you’d like this README in RMarkdown, with badges (build status, license, test coverage).
