@@ -10,37 +10,34 @@ navbar:
     right: [github]
 
 reference:
-- title: "Simulación de Pacientes y Asignación"
-  desc: "Funciones para simular pacientes y su asignación a grupos de tratamiento"
+- title: "Patients and Allocation Simulation"
+  desc: "Functions to simulate patients and their assignment to treatment groups"
   contents:
   - '`simulate_patients`'
   - '`simulate_allocation`'
 
-- title: "Simulación de Resultados"
-  desc: "Funciones para simular diferentes tipos de resultados clínicos"
+- title: "Outcome Simulation"
+  desc: "Functions to simulate different types of clinical outcomes"
   contents:
   - '`simulate_outcomes`'
   - '`simulate_longitudinal_outcomes`'
   - '`simulate_survival`'
 
-- title: "Simulación de Eventos del Estudio"
-  desc: "Funciones para simular eventos durante el estudio"
+- title: "Dropout and Visit Simulation"
+  desc: "Functions to simulate events occurring during the study"
   contents:
   - '`simulate_visits`'
   - '`simulate_dropout`'
 
-- title: "Exportación de Datos"
-  desc: "Funciones para exportar datos en formatos específicos"
+- title: "Data"
+  desc: "Functions to export data in specific formats"
   contents:
   - '`export_adam_format`'
 
 articles:
-- title: "Intro"
+- title: "Introduction"
   contents:
     - intro-clinical-trial-simulator
 
-
-
 development:
   mode: auto
-
